@@ -75,7 +75,7 @@
         border: 1px solid $primary-border-bg;
         color: $primary-color-bg;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 14px;
         transition: 0.3s;
         &:hover {
             border: 1px solid $primary-border-bg-hover;
@@ -89,7 +89,7 @@
         background-color: $primary-bg;
         color: white;
         font-weight: 600;
-        font-size: 16px;
+        font-size: 14px;
         transition: 0.3s;
         &:hover {
             background-color: $primary-bg-hover;
