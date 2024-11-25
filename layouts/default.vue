@@ -20,7 +20,8 @@
             </a>
             <div class="header-noauth">
                 <div class="header-btns">
-                    <button class="header-btn register__btn">Регистрация</button>
+                    <button class="header-btn register__btn" @click="openModal">Регистрация</button>
+                    <RegisterModal ref="modal"/>
                     <button class="header-btn login__btn">Вход</button>
                 </div>
             </div>
@@ -55,8 +56,14 @@
     </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
+import { ref } from 'vue';
 
+const modal = ref(null);
+
+const openModal = () => {
+  modal.value.open();  // Открыть модальное окно
+};
 </script>
 
 <style lang="scss" scoped>

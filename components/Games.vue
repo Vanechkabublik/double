@@ -7,6 +7,7 @@
                     <h3 class="game-item__title">Mines</h3>
                     <p class="game-item__text">Пройди все ячейки и не попади на мину. Удачи!</p>
                     <button class="game-item__btn">Играть</button>
+                    <div class="game__item__filter"></div>
                 </div>
             </div>
             <div class="game__item game__item-random">
@@ -14,6 +15,7 @@
                     <h3 class="game-item__title">Орел и решка</h3>
                     <p class="game-item__text">Думаю все знают эту игру. Выбери сторону и играй. Удачи!</p>
                     <button class="game-item__btn">Играть</button>
+                    <div class="game__item__filter"></div>
                 </div>
             </div>  
         </div>
@@ -61,8 +63,24 @@
     flex-direction: column;
     justify-content: flex-end;
     padding: 30px;
+    position: relative;
 }
-.game__item-content {}
+.game__item__filter {
+    z-index: -1;
+    width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: #000;
+	opacity: 0.6;
+    border-radius: 10px;
+}
+.game__item-content {
+    z-index: 2;
+}
 .game-item__title {
     font-size: 25px;
     color: white;
