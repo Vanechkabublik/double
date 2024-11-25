@@ -1,5 +1,6 @@
 <template>
 <Banners />
+<Games />
 </template>
 
 <style lang="scss" scoped>
