@@ -89,7 +89,9 @@
     setTimeout(() => {
       // Показать уведомление
       showNotification.value = true;
-
+        // Очистить форму после успешной отправки
+        formData.value.username = '';
+        formData.value.password = '';
       // Скрыть уведомление через 3 секунды
       setTimeout(() => {
         showNotification.value = false;
@@ -97,7 +99,7 @@
       }, 3000);
 
 
-    }, 500);
+    }, 1000);
     }
   };
   
