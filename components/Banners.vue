@@ -55,7 +55,7 @@
     justify-content: flex-end;
     position: relative;
     @media (max-width: 850px) {
-        justify-content: center;
+        justify-content: flex-end;
     }
 }
 .main-banner__filter {

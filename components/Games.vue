@@ -28,7 +28,7 @@
 .games {
     max-width: 1440px;
     margin: 0 auto;
-    padding: 20px 15px;
+    padding: 35px 15px;
 }
 .games-title {
     font-size: 30px;
