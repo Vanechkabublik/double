@@ -29,6 +29,9 @@
         </div>
       </div>
     </div>
+    <div v-if="showNotification" class="notification">
+    <p>Вы успешно зарегистрировались!</p>
+  </div>
   </template>
   
   <script setup>
@@ -47,6 +50,7 @@
   });
   
   const formErrors = ref([]);
+  const showNotification = ref(false);
   
   const open = () => {
     isVisible.value = true;
@@ -82,10 +86,18 @@
   const submitForm = () => {
     if (validateForm()) {
       // Здесь имитируем отправку данных на сервер
+    setTimeout(() => {
+      // Показать уведомление
+      showNotification.value = true;
+
+      // Скрыть уведомление через 3 секунды
       setTimeout(() => {
-        alert('Форма успешно отправлена!');
-        close(); // Закрытие окна после успешной отправки
-      }, 1000);
+        showNotification.value = false;
+
+      }, 3000);
+
+
+    }, 500);
     }
   };
   
@@ -151,6 +163,9 @@
     font-size: 14px;
     color: white;
     font-weight: 500;
+    @media (max-width: 850px) {
+      font-size: 12px;
+    }
   }
   
   .register-modal__from-btn {
@@ -192,6 +207,36 @@
   .input-error {
     border-color: red;
   }
+
+  .notification {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background-color: #35af64;
+  color: white;
+  padding: 15px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px;
+  z-index: 1100;
+  opacity: 0;
+  animation: slideDown 0.5s forwards;
+  @media (max-width: 850px) {
+      font-size: 12px;
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    top: -60px;
+    opacity: 0;
+  }
+  100% {
+    top: 20px;
+    opacity: 1;
+  }
+}
+
   
   /* Анимация плавного появления */
   @keyframes fadeIn {
