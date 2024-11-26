@@ -25,12 +25,15 @@
           <button 
             class="babls-btn" 
             @click="startGame" 
-            :disabled="gameState.balance <= 0 || !isClient"
+            :disabled="gameState.balance <= 0 || betAmount.value <= 0 || betAmount.value > gameState.balance || !isClient"
           >
             Играть
           </button>
           <p v-if="gameState.balance <= 0 && isClient" class="warning-text">
             У вас недостаточно средств для игры. Пополните баланс!
+          </p>
+          <p v-if="betAmount.value > gameState.balance && isClient" class="warning-text">
+            Ставка не может быть больше вашего баланса.
           </p>
         </div>
         <div class="babls-right">
@@ -57,8 +60,8 @@
   const winChance = ref<number>(50);
   const betAmount = ref<number>(100);
   const targetMultiplier = ref<number>(2);
-  const resultColor = ref<'green' | 'red' | ''>('');
-  const resultText = ref<string>('');
+  const resultColor = ref<'green' | 'red' | ''>(''); // Цвет результата
+  const resultText = ref<string>(''); // Текст результата
   
   // Переменная для отслеживания, находимся ли мы на клиенте
   const isClient = ref(false);
@@ -108,8 +111,8 @@
   
   // Функция начала игры
   const startGame = (): void => {
-    if (gameState.balance <= 0) {
-      return;  // Не запускаем игру, если баланса нет
+    if (betAmount.value > gameState.balance) {
+      return;  // Не запускаем игру, если ставка больше баланса
     }
   
     resultColor.value = '';
@@ -131,6 +134,7 @@
     }, 500);
   };
   </script>
+  
   
 
 
