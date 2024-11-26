@@ -63,35 +63,29 @@
     }
   });
   
-  // Реактивные вычисляемые значения для синхронизации между шансом и множителем
   const computedWinChance = computed(() => {
-    // Если цель x100, шанс должен быть 1%
-    if (targetMultiplier.value === 100) {
-      return 1;
-    }
-    // Если цель меньше x100, то мы вычисляем шанс пропорционально
-    return (100 / targetMultiplier.value);
-  });
-  
-  const computedTargetMultiplier = computed(() => {
-    // Если шанс 100%, цель должна быть 1x
-    if (winChance.value === 100) {
-      return 1;
-    }
-    // Если шанс меньше 100%, то вычисляем цель пропорционально
-    return (100 / winChance.value);
-  });
-  
-  // Слежение за изменениями для корректного обновления значений
-  watch(winChance, (newValue) => {
-    // Если шанс изменился, пересчитываем цель
-    targetMultiplier.value = computedTargetMultiplier.value;
-  });
-  
-  watch(targetMultiplier, (newValue) => {
-    // Если цель изменена, пересчитываем шанс
-    winChance.value = computedWinChance.value;
-  });
+  if (targetMultiplier.value === 100) {
+    return 1;
+  }
+  return +(100 / targetMultiplier.value).toFixed(2);
+});
+
+const computedTargetMultiplier = computed(() => {
+  if (winChance.value === 100) {
+    return 1;
+  }
+  return +(100 / winChance.value).toFixed(2);
+});
+
+watch(winChance, (newValue) => {
+  targetMultiplier.value = +computedTargetMultiplier.value.toFixed(2);
+});
+
+watch(targetMultiplier, (newValue) => {
+  winChance.value = +computedWinChance.value.toFixed(2);
+});
+
+
   
   const intervalId = ref<NodeJS.Timeout | null>(null); // Идентификатор интервала
   const hasGameEnded = ref<boolean>(false); // Флаг для предотвращения повторных проверок
