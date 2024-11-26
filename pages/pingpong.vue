@@ -37,21 +37,21 @@
   
   <script setup lang="ts">
   import { ref, computed, watch } from 'vue';
+  import { inject } from 'vue';
   
-  useSeoMeta({
-    title: 'LuckyCrystal | Баблс',
-    description: 'Финансовый игровой проект с честным исходом игры и быстрыми выплатами.'
-  });
+  const gameState = inject('gameState');  // Получаем переданное состояние
   
-  // Переменные с типами
-  const winChance = ref<number>(50); // Шанс победы в процентах
-  const betAmount = ref<number>(100); // Ставка
-  const targetMultiplier = ref<number>(2); // Целевой множитель
-  const resultColor = ref<'green' | 'red' | ''>(''); // Цвет результата
-  const resultText = ref<string>(''); // Текст результата
+  if (!gameState) {
+    throw new Error('gameState is not provided!');
+  }
+  
+  const winChance = ref<number>(50);
+  const betAmount = ref<number>(100);
+  const targetMultiplier = ref<number>(2);
+  const resultColor = ref<'green' | 'red' | ''>('');
+  const resultText = ref<string>('');
   
   const maxMultiplier = computed(() => {
-    // Максимальный множитель зависит от шанса победы
     if (winChance.value >= 90) {
       return 2;
     } else if (winChance.value >= 50) {
@@ -64,62 +64,48 @@
   });
   
   const computedWinChance = computed(() => {
-  if (targetMultiplier.value === 100) {
-    return 1;
-  }
-  return +(100 / targetMultiplier.value).toFixed(2);
-});
-
-const computedTargetMultiplier = computed(() => {
-  if (winChance.value === 100) {
-    return 1;
-  }
-  return +(100 / winChance.value).toFixed(2);
-});
-
-watch(winChance, (newValue) => {
-  targetMultiplier.value = +computedTargetMultiplier.value.toFixed(2);
-});
-
-watch(targetMultiplier, (newValue) => {
-  winChance.value = +computedWinChance.value.toFixed(2);
-});
-
-
-  
-  const intervalId = ref<NodeJS.Timeout | null>(null); // Идентификатор интервала
-  const hasGameEnded = ref<boolean>(false); // Флаг для предотвращения повторных проверок
-  
-  function startGame(): void {
-    // Останавливаем предыдущую игру
-    if (intervalId.value !== null) {
-      clearInterval(intervalId.value);
+    if (targetMultiplier.value === 100) {
+      return 1;
     }
+    return +(100 / targetMultiplier.value).toFixed(2);
+  });
   
-    // Сбрасываем параметры игры
+  const computedTargetMultiplier = computed(() => {
+    if (winChance.value === 100) {
+      return 1;
+    }
+    return +(100 / winChance.value).toFixed(2);
+  });
+  
+  watch(winChance, () => {
+    targetMultiplier.value = +computedTargetMultiplier.value.toFixed(2);
+  });
+  
+  watch(targetMultiplier, () => {
+    winChance.value = +computedWinChance.value.toFixed(2);
+  });
+  
+  const startGame = (): void => {
     resultColor.value = '';
     resultText.value = '';
-    hasGameEnded.value = false;
   
-    // Генерация случайного числа от 1 до 100 для шанса победы
     const randomChance = Math.random() * 100;
-  
-    // Генерация случайного числа для отображения в случае проигрыша
     const randomMultiplier = Math.random() * maxMultiplier.value;
   
-    // Имитация игры, которая завершится сразу после генерации числа
     setTimeout(() => {
-      // Проверяем, выиграл ли пользователь
       if (randomChance <= winChance.value) {
-        resultColor.value = 'green'; // Победа
+        resultColor.value = 'green';
         resultText.value = `x${targetMultiplier.value}`;
+        gameState.updateBalance(betAmount.value * (targetMultiplier.value - 1)); // Add winnings
       } else {
-        resultColor.value = 'red'; // Поражение
+        resultColor.value = 'red';
         resultText.value = `x${randomMultiplier.toFixed(2)}`;
+        gameState.updateBalance(-betAmount.value); // Subtract bet amount
       }
-    }, 500); // Немного задержки для имитации процесса игры
-  }
+    }, 500);
+  };
   </script>
+  
   
 
 
@@ -129,7 +115,7 @@ watch(targetMultiplier, (newValue) => {
   margin: 0 auto;
   padding: 100px 15px;
   @media (max-width: 850px) {
-    padding: 50px 15px;
+    padding: 35px 15px;
   }
 }
 .babls-title {

@@ -27,6 +27,12 @@
             </div>
         </div>
     </div>
+    <div class="user-balance">
+        <div class="user-balance__inner">
+            <span class="user-balance__title">Баланс</span>
+            <span v-if="gameState" class="user-balance__balance">{{ gameState.balance }} ₽</span>
+        </div>
+    </div>
     <NuxtPage />
     <div class="footer">
         <a href="/" class="footer-logo">
@@ -57,13 +63,19 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, provide } from 'vue';
+import { useGameState } from '@/store/store';
+
+const gameState = useGameState();
+
+provide('gameState', gameState);
 
 const modal = ref(null);
 
 const openModal = () => {
   modal.value.open();  // Открыть модальное окно
 };
+
 </script>
 
 <style lang="scss" scoped>
@@ -132,6 +144,44 @@ const openModal = () => {
         }
     }
 }
+
+.user-balance {
+    background-color: $primary-bg;
+    padding: 0 15px;
+}
+.user-balance__inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 25px 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+    @media (max-width: 850px) {
+        padding: 20px 15px;
+    }
+}
+.user-balance__title {
+    font-size: 14px;
+    color: $text-color;
+    font-weight: 500;
+    display: block;
+    @media (max-width: 850px) {
+        font-size: 12px;
+    }
+}
+.user-balance__balance {
+    font-weight: 600;
+    font-size: 18px;
+    color: white;
+    display: block;
+    @media (max-width: 850px) {
+        font-size: 14px;
+    }
+}
+
 .footer {
     max-width: 1440px;
     margin: 0 auto;
