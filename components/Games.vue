@@ -18,6 +18,14 @@
                     <div class="game__item__filter"></div>
                 </div>
             </div>  
+            <div class="game__item game__item-random">
+                <div class="game__item-content">
+                    <h3 class="game-item__title">Баблс</h3>
+                    <p class="game-item__text">Выбери шанс победы, желаемую цель и играй. Удачи!</p>
+                    <a href="/pingpong" class="game-item__btn">Играть</a>
+                    <div class="game__item__filter"></div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -106,6 +114,8 @@
     font-weight: 600;
     color: white;
     padding: 15px 25px;
+    display: block;
+    width: 100px;
     @media (max-width: 850px) {
         font-size: 12px;
     }
