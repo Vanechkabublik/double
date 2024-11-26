@@ -22,7 +22,16 @@
             <label for="betAmount">Ставка:</label>
             <input v-model.number="betAmount" type="number" id="betAmount" min="1" />
           </div>
-          <button class="babls-btn" @click="startGame">Играть</button>
+          <button 
+            class="babls-btn" 
+            @click="startGame" 
+            :disabled="gameState.balance <= 0 || !isClient"
+          >
+            Играть
+          </button>
+          <p v-if="gameState.balance <= 0 && isClient" class="warning-text">
+            У вас недостаточно средств для игры. Пополните баланс!
+          </p>
         </div>
         <div class="babls-right">
           <div class="babls-result">
@@ -36,7 +45,7 @@
   </template>
   
   <script setup lang="ts">
-  import { ref, computed, watch } from 'vue';
+  import { ref, computed, watch, onMounted } from 'vue';
   import { inject } from 'vue';
   
   const gameState = inject('gameState');  // Получаем переданное состояние
@@ -51,6 +60,15 @@
   const resultColor = ref<'green' | 'red' | ''>('');
   const resultText = ref<string>('');
   
+  // Переменная для отслеживания, находимся ли мы на клиенте
+  const isClient = ref(false);
+  
+  // Устанавливаем флаг на клиенте
+  onMounted(() => {
+    isClient.value = true;
+  });
+  
+  // Максимальный множитель в зависимости от шанса победы
   const maxMultiplier = computed(() => {
     if (winChance.value >= 90) {
       return 2;
@@ -63,6 +81,7 @@
     }
   });
   
+  // Пересчитываем шанс на основе целевого множителя
   const computedWinChance = computed(() => {
     if (targetMultiplier.value === 100) {
       return 1;
@@ -70,6 +89,7 @@
     return +(100 / targetMultiplier.value).toFixed(2);
   });
   
+  // Пересчитываем целевой множитель на основе шанса победы
   const computedTargetMultiplier = computed(() => {
     if (winChance.value === 100) {
       return 1;
@@ -77,6 +97,7 @@
     return +(100 / winChance.value).toFixed(2);
   });
   
+  // Обработчики изменений для двух направлений
   watch(winChance, () => {
     targetMultiplier.value = +computedTargetMultiplier.value.toFixed(2);
   });
@@ -85,7 +106,12 @@
     winChance.value = +computedWinChance.value.toFixed(2);
   });
   
+  // Функция начала игры
   const startGame = (): void => {
+    if (gameState.balance <= 0) {
+      return;  // Не запускаем игру, если баланса нет
+    }
+  
     resultColor.value = '';
     resultText.value = '';
   
@@ -96,16 +122,15 @@
       if (randomChance <= winChance.value) {
         resultColor.value = 'green';
         resultText.value = `x${targetMultiplier.value}`;
-        gameState.updateBalance(betAmount.value * (targetMultiplier.value - 1)); // Add winnings
+        gameState.updateBalance(betAmount.value * (targetMultiplier.value - 1)); // Добавляем выигрыш
       } else {
         resultColor.value = 'red';
         resultText.value = `x${randomMultiplier.toFixed(2)}`;
-        gameState.updateBalance(-betAmount.value); // Subtract bet amount
+        gameState.updateBalance(-betAmount.value); // Убираем ставку
       }
     }, 500);
   };
   </script>
-  
   
 
 
@@ -212,5 +237,9 @@
 }
 .red {
   color: rgb(255, 71, 71);
+}
+.warning-text {
+  color: rgb(255, 71, 71);
+  font-size: 12px;
 }
 </style>

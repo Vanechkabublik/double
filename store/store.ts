@@ -3,9 +3,13 @@ import Cookies from 'js-cookie'; // Импортируем библиотеку 
 
 export const useGameState = () => {
   // Загружаем баланс из кук, если он существует
-  const storedBalance = Cookies.get('balance'); // Получаем значение из куки
+  const storedBalance = Cookies.get('balance');
+  
+  // Если баланс в куках существует и больше 0, используем его, иначе устанавливаем дефолтный баланс 1000
+  const initialBalance = storedBalance && parseFloat(storedBalance) > 0 ? parseFloat(storedBalance) : 0;
+
   const state = reactive({
-    balance: storedBalance ? parseFloat(storedBalance) : 0, // Если куки нет, устанавливаем дефолтный баланс
+    balance: initialBalance, // Устанавливаем баланс (или дефолтный, если его нет или он меньше или равен 0)
     updateBalance(amount: number) {
       state.balance += amount;
       Cookies.set('balance', state.balance.toString(), { expires: 7 }); // Сохраняем новый баланс в куки с истечением через 7 дней
